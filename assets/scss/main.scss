@@ -1,0 +1,18 @@
+@use 'scss-reset/reset';
+@use "_forms.scss" as forms;
+
+@import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@100..900&display=swap');
+
+
+html, body, #__nuxt, #__layout, div[data-v-inspector] {
+  height: 100% !important;
+  width: 100% !important;
+}
+
+html {
+  font-family: 'Alexandria', sans-serif;
+}
+
+body {
+  background: #AFAFAF;
+}
