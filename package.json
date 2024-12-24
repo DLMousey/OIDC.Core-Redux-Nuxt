@@ -12,9 +12,12 @@
   "dependencies": {
     "@nuxt/icon": "^1.7.2",
     "@nuxtjs/color-mode": "^3.5.2",
+    "@vuelidate/core": "^2.0.3",
+    "@vuelidate/validators": "^2.0.4",
     "nuxt": "^3.14.159",
     "vue": "latest",
-    "vue-router": "latest"
+    "vue-router": "latest",
+    "vuelidate": "^0.7.7"
   },
   "devDependencies": {
     "@iconify-json/duo-icons": "^1.2.1",

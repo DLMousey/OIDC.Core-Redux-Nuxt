@@ -32,3 +32,21 @@
     list-style: square;
   }
 }
+
+button[type="submit"] {
+  background: #FF575F;
+  color: #FFF;
+  border-radius: 8px;
+  padding: 12px;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: lighten(#FF575F, 5%);
+  }
+
+  &:disabled {
+    background: #333;
+    color: #666;
+    cursor: pointer;
+  }
+}

@@ -21,10 +21,10 @@ const authState = useAuth();
         <span class="nav-heading">Menu</span>
         <ul>
           <li>
-            <a href="#">
+            <NuxtLink to="/applications">
               <Icon name="duo-icons:app" />
               Applications
-            </a>
+            </NuxtLink>
           </li>
           <li>
             <a href="#">
@@ -80,7 +80,9 @@ const authState = useAuth();
 }
 
 .main {
-  padding: 40px;
+  width: 100%;
+  height: 100%;
+  background: #FFF;
 }
 
 .aside {

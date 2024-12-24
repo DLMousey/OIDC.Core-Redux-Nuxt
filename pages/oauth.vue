@@ -4,7 +4,6 @@ let data;
 
 if (import.meta.browser) {
   const route = useRoute();
-  useFetch();
 
   let string = '';
   const keys = Object.keys(route.query);
@@ -19,7 +18,7 @@ if (import.meta.browser) {
 
   try {
     const fetchConfig = useFetchConfig(`/oauth?${string}`, { server: false, lazy: true });
-    data = await $fetch(fetchConfig.url, fetchConfig.config);
+    data = await useFetch(fetchConfig.url, fetchConfig.config);
   } catch (err) {
     console.error(err);
   }
