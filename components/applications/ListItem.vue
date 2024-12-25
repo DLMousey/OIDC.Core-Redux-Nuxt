@@ -1,9 +1,16 @@
 <script setup lang="ts">
-const props = defineProps();
+defineProps<{
+  application: {}
+}>();
 </script>
 
 <template>
-<pre>{{ props }}</pre>
+<div>
+  <h1>{{ application.name }}</h1>
+  <b>{{ application.description ?? "No description provided" }}</b>
+  <a :href="application.homepageUrl">Homepage URL</a>
+  <a :href="application.callbackUrl">Callback URL</a>
+</div>
 </template>
 
 <style scoped lang="scss">
