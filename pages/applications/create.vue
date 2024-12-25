@@ -1,6 +1,7 @@
-<script setup lang="ts">
+<script async setup lang="ts">
 import {helpers, required, url} from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
+import {useFetchConfig} from "#imports";
 
 const application = reactive({
   name: null,
@@ -25,14 +26,22 @@ const rules = computed(() => {
 });
 
 const v$ = useVuelidate(rules, application);
-
-function processForm(event: Event): void {
+async function processForm(event: Event): Promise<void> {
   event.preventDefault();
-  console.log('processing form', application);
-  v$.value.$validate();
-  if (v$.value.$errors) {
+  await v$.value.$validate();
+  if (v$.value.$errors.length != 0) {
     console.warn('validation failed', v$.value.$errors);
+    return;
   }
+
+  const fetchConfig = useFetchConfig(`/applications`, {
+    server: false,
+    lazy: false,
+    method: "POST",
+    body: application
+  });
+
+  const result = await useFetch(fetchConfig.url, fetchConfig.config);
 }
 </script>
 
