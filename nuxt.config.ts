@@ -13,5 +13,10 @@ export default defineNuxtConfig({
         domain: 'localhost:7149'
       }
     },
+  },
+  router: {
+    options: {
+      linkActiveClass: "link-active"
+    }
   }
 })

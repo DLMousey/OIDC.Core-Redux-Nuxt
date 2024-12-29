@@ -33,12 +33,13 @@
   }
 }
 
-button[type="submit"] {
+button[type="submit"], .button {
   background: #FF575F;
   color: #FFF;
   border-radius: 8px;
   padding: 12px;
   transition: background 0.2s ease;
+  text-decoration: none;
 
   &:hover {
     background: lighten(#FF575F, 5%);

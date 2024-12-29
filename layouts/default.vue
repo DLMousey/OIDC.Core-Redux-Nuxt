@@ -91,6 +91,7 @@ const authState = useAuth();
   height: 100%;
   width: 300px;
   background: #FFF;
+  border-right: 1px solid #EBEBEB;
 
   .header {
     flex-basis: 10%;
@@ -136,6 +137,17 @@ const authState = useAuth();
         &:hover {
           background: #FF575F;
           padding-left: 24px;
+        }
+
+        & > .link-active {
+          background: #FF575F;
+          padding-left: 24px;
+          border-top-left-radius: 8px;
+          border-bottom-left-radius: 8px;
+
+          &:hover {
+            padding-left: 0;
+          }
         }
       }
     }

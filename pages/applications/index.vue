@@ -22,7 +22,7 @@ if (data) {
     <div v-if="!loading && !data">
       No applications found.
     </div>
-    <ListItem v-for="application in data" :application="application" :key="application.id" />
+    <ListItem class="applications-listitem" v-for="application in data" :application="application" :key="application.id" />
   </div>
 </div>
 </template>
@@ -30,8 +30,33 @@ if (data) {
 <style scoped lang="scss">
 .applications {
   display: flex;
+  flex-direction: column;
   background: #FFF;
   width: 100%;
   height: 100%;
+
+  //&-list {
+  //  display: flex;
+  //  flex-basis: 23%;
+  //  flex-wrap: wrap;
+  //  flex-grow: 1;
+  //  flex-shrink: 0;
+  //  width: 100%;
+  //  height: 100%;
+  //  align-items: center;
+  //  justify-content: center;
+  //}
+
+  &-list {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 100%;
+  }
+
+  &-listitem {
+    flex-basis: 30%;
+    height: 275px;
+  }
 }
 </style>
