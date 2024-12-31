@@ -1,10 +1,11 @@
 <script async setup lang="ts">
 import {useFetch, useFetchConfig} from "#imports";
 import ListItem from "~/components/applications/ListItem.vue";
+import {useFetchWithRefresh} from "~/composables/fetch-refresh";
 
 const loading = ref(true);
 const fetchConfig = useFetchConfig(`/applications`, { server: false, lazy: true });
-const { data, error } = await useFetch(fetchConfig.url, fetchConfig.config);
+const { data, error } = await useFetchWithRefresh(fetchConfig.url, fetchConfig.config);
 
 console.log(data, error);
 if (data) {

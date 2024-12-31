@@ -33,7 +33,8 @@ export default defineNuxtRouteMiddleware((to) => {
         }
 
         if (exp != null && exp < new Date().valueOf()) {
-            allow = false;
+            console.warn('Potentially expired access token detected', { exp, date: new Date().valueOf()});
+        //     allow = false;
         }
     } else {
         return;
