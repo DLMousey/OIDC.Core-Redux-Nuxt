@@ -53,6 +53,7 @@ const sendRequest = async() : Promise<string> => {
 }
 
 const submitForm = async (event: any) => {
+  console.log('submitting form');
   event.preventDefault();
   const result: boolean = validate();
   if (!result) {
@@ -94,13 +95,12 @@ const validate = () : boolean  => {
 </script>
 
 <template>
-  <div class="form">
+  <form class="form">
     <div class="header">
       <span class="text">
         <NuxtLink class="text--lead" to="/">
           <img src="/wordmark-light-theme.png" />
         </NuxtLink>
-<!--        <span class="text&#45;&#45;sub">Sign In</span>-->
       </span>
     </div>
     <div class="form">
@@ -129,7 +129,7 @@ const validate = () : boolean  => {
         An error occurred, please double check your credentials and try again
       </div>
     </div>
-  </div>
+  </form>
 </template>
 
 <style scoped lang="scss">
