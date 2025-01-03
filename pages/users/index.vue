@@ -1,35 +1,35 @@
-<script async setup lang="ts">
-import {useFetch, useFetchConfig} from "#imports";
-import ListItem from "~/components/applications/ListItem.vue";
-import {useFetchWithRefresh} from "~/composables/fetch-refresh";
+<script setup lang="ts">
+import {useFetchConfig} from "#imports";
+import {useFetchWithRefresh} from "#imports";
+import ListItem from "~/components/users/ListItem.vue";
+import type IUser from "~/data/models/IUser";
 
 const loading = ref(true);
-const fetchConfig = useFetchConfig(`/applications`, { server: false, lazy: true });
+const fetchConfig = useFetchConfig(`/users`, { server: false, lazy: true });
 const { data, error } = await useFetchWithRefresh(fetchConfig.url, fetchConfig.config);
 
-console.log(data, error);
 if (data) {
   loading.value = false;
 }
 </script>
 
 <template>
-<div class="applications">
-  <div class="applications-toolbar">
-    <NuxtLink to="applications/create" class="button">Create application</NuxtLink>
+<div class="users">
+  <div class="users-toolbar">
+    <NuxtLink to="/users/create" class="button">Create User</NuxtLink>
   </div>
-  <div class="applications-list">
+  <div class="users-list">
     <div v-if="loading">Loading</div>
     <div v-if="!loading && !data">
-      No applications found.
+      No users found
     </div>
-    <ListItem class="applications-listitem" v-for="application in data" :application="application" :key="application.id" />
+    <ListItem v-for="user in data as IUser[]" :key="user.id" :user="user" />
   </div>
 </div>
 </template>
 
 <style scoped lang="scss">
-.applications {
+.users {
   display: flex;
   flex-direction: column;
   background: #FFF;

@@ -43,7 +43,7 @@ export const useFetchWithRefresh = async (url: string, originalOptions: UseFetch
             // Father forgive me for i have ts-ignored
             // @ts-ignore
             originalOptions.headers!.Authorization = `Bearer ${sessionStorage.getItem('_oidc.core.at')}`;
-            return await useFetch(url, originalOptions);
+            return useFetch(url, originalOptions);
         }
     });
 }

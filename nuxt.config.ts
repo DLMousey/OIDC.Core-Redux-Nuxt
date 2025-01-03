@@ -18,5 +18,8 @@ export default defineNuxtConfig({
     options: {
       linkActiveClass: "link-active"
     }
+  },
+  typescript: {
+    strict: false
   }
 })

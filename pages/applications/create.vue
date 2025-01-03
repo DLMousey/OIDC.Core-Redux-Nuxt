@@ -46,66 +46,67 @@ async function processForm(event: Event): Promise<void> {
 </script>
 
 <template>
-<form class="form" @submit="processForm">
-  <div class="form_group">
-    <label class="form_group-label" for="name">Name</label>
-    <input
-        class="form_group-input"
-        type="text"
-        id="name"
-        v-model="application.name"
-        @change="v$.name.$touch"
-    />
-    <pre>{{ v$.name.$errors }}</pre>
-    <div v-if="v$.name.invalid && v$.name.$errors">
-      <ul>
-        <li v-for="error in v$.name.$errors">
-          {{ error }}
-        </li>
-      </ul>
+<div class="container--form">
+  <form class="form" @submit="processForm">
+    <h2 class="form_header">Create an Application</h2>
+    <div class="form_group">
+      <label class="form_group-label" for="name">Name</label>
+      <input
+          class="form_group-input"
+          type="text"
+          id="name"
+          v-model="application.name"
+          @change="v$.name.$touch"
+      />
+      <div v-if="v$.name.invalid && v$.name.$errors">
+        <ul>
+          <li v-for="error in v$.name.$errors">
+            {{ error }}
+          </li>
+        </ul>
+      </div>
     </div>
-  </div>
-  <div class="form_group">
-    <label class="form_group-label" for="description">Description</label>
-    <textarea
-        class="form_group-input"
-        id="description"
-        v-model="application.description"
-        @change="v$.description.$touch"
-    ></textarea>
-  </div>
-  <div class="form_group">
-    <label class="form_group-label" for="homepageUrl">Homepage URL</label>
-    <input
-        class="form_group-input"
-        type="text"
-        id="homepageUrl"
-        v-model="application.homepageUrl"
-        @change="v$.homepageUrl.$touch"
-    />
-  </div>
-  <div class="form_group">
-    <label class="form_group-label" for="callbackUrl">Callback URL</label>
-    <input
-        class="form_group-input"
-        type="text"
-        id="callbackUrl"
-        v-model="application.callbackUrl"
-        @change="v$.callbackUrl.$touch"
-    />
-    <pre>{{ v$.callbackUrl.$errors }}</pre>
-    <div v-if="v$.callbackUrl.$invalid || v$.callbackUrl.$error">
-      <ul>
-        <li v-for="error in v$.callbackUrl.$errors">
-          {{ error.$message }}
-        </li>
-      </ul>
+    <div class="form_group">
+      <label class="form_group-label" for="description">Description</label>
+      <textarea
+          class="form_group-input"
+          id="description"
+          v-model="application.description"
+          @change="v$.description.$touch"
+      ></textarea>
     </div>
-  </div>
-  <div class="form_group">
-    <button type="submit" :disabled="v$.$errors.length > 0">Create Application</button>
-  </div>
-</form>
+    <div class="form_group">
+      <label class="form_group-label" for="homepageUrl">Homepage URL</label>
+      <input
+          class="form_group-input"
+          type="text"
+          id="homepageUrl"
+          v-model="application.homepageUrl"
+          @change="v$.homepageUrl.$touch"
+      />
+    </div>
+    <div class="form_group">
+      <label class="form_group-label" for="callbackUrl">Callback URL</label>
+      <input
+          class="form_group-input"
+          type="text"
+          id="callbackUrl"
+          v-model="application.callbackUrl"
+          @change="v$.callbackUrl.$touch"
+      />
+      <div v-if="v$.callbackUrl.$invalid || v$.callbackUrl.$error">
+        <ul>
+          <li v-for="error in v$.callbackUrl.$errors">
+            {{ error.$message }}
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="form_group">
+      <button type="submit" :disabled="v$.$errors.length > 0">Create Application</button>
+    </div>
+  </form>
+</div>
 </template>
 
 <style scoped lang="scss">

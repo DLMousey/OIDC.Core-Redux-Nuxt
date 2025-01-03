@@ -1,35 +1,38 @@
-<script async setup lang="ts">
-import {useFetch, useFetchConfig} from "#imports";
-import ListItem from "~/components/applications/ListItem.vue";
+<script setup lang="ts">
+import ListItem from "~/components/scopes/ListItem.vue";
 import {useFetchWithRefresh} from "~/composables/fetch-refresh";
+import {useFetchConfig} from "#imports";
+import type IScope from "~/data/models/IScope";
 
 const loading = ref(true);
-const fetchConfig = useFetchConfig(`/applications`, { server: false, lazy: true });
+const fetchConfig = useFetchConfig(`/scopes`, { server: false, lazy: true });
 const { data, error } = await useFetchWithRefresh(fetchConfig.url, fetchConfig.config);
 
-console.log(data, error);
 if (data) {
   loading.value = false;
 }
 </script>
 
 <template>
-<div class="applications">
-  <div class="applications-toolbar">
-    <NuxtLink to="applications/create" class="button">Create application</NuxtLink>
+<div class="scopes">
+  <div class="scopes-toolbar">
+<!--    <select>-->
+<!--      <option v-for="(ns, idx) in namespaceList" :value="ns" :key="ns">{{ ns }}</option>-->
+<!--    </select>-->
+    <NuxtLink to="scopes/create" class="button">Create Scope</NuxtLink>
   </div>
-  <div class="applications-list">
+  <div class="scopes-list">
     <div v-if="loading">Loading</div>
     <div v-if="!loading && !data">
-      No applications found.
+      No scopes found.
     </div>
-    <ListItem class="applications-listitem" v-for="application in data" :application="application" :key="application.id" />
+    <ListItem class="scopes-listitem" v-for="scope in data" :scope="scope" :key="scope.name" />
   </div>
 </div>
 </template>
 
 <style scoped lang="scss">
-.applications {
+.scopes {
   display: flex;
   flex-direction: column;
   background: #FFF;
@@ -45,7 +48,6 @@ if (data) {
 
   &-listitem {
     flex-basis: 30%;
-    height: 275px;
   }
 
   &-toolbar {

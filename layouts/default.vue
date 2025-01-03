@@ -27,10 +27,10 @@ const authState = useAuth();
             </NuxtLink>
           </li>
           <li>
-            <a href="#">
+            <NuxtLink to="/scopes">
               <Icon name="duo-icons:clipboard" />
               Scopes
-            </a>
+            </NuxtLink>
           </li>
           <li>
             <a href="#">
@@ -43,6 +43,12 @@ const authState = useAuth();
               <Icon name="duo-icons:user" />
               Settings
             </a>
+          </li>
+          <li>
+            <NuxtLink to="/users">
+              <Icon name="duo-icons:user" />
+              Users
+            </NuxtLink>
           </li>
           <li>
             <a href="#">
