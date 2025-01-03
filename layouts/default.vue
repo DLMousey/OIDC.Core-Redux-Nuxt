@@ -1,10 +1,10 @@
 <script setup lang="ts">
 const colourMode = useColorMode();
 const imgSrc = ref(`/wordmark-light-theme.png`);
-
-definePageMeta({
-  middleware: ['auth']
-})
+//
+// definePageMeta({
+//   middleware: ['auth']
+// })
 
 const authState = useAuth();
 </script>

@@ -1,16 +1,10 @@
 <script setup lang="ts">
-import {definePageMeta} from "#imports";
+import {definePageMeta, useFetchConfig} from "#imports";
+import type IAuthAttemptResponse from "~/data/models/IAuthAttemptResponse";
 
 definePageMeta({
   layout: 'form-card'
 })
-
-interface FormError {
-  [key: string]: string[];
-}
-
-const c = useRuntimeConfig();
-const api = `${c.public.api.protocol}://${c.public.api.domain}`;
 
 const state = reactive({
   formErrors: [],
@@ -18,23 +12,24 @@ const state = reactive({
     email: null,
     password: null
   },
-  loading: false
+  loading: false,
+  error: false
 })
 
-const submitForm = (event: any) => {
-  const result: boolean = validate();
-  if (!result) {
-    return;
-  }
-
-  state.loading = true;
-  $fetch(`${api}/authentication`, {
-    method: 'POST',
+const sendRequest = async() : Promise<string> => {
+  const config = useFetchConfig(`/authentication`, {
+    server: false,
+    lazy: false,
+    method: "POST",
     body: {
       email: state.credentials.email,
       password: state.credentials.password
     }
-  }).then((data: any) => {
+  });
+
+  try {
+    state.loading = true;
+    const data = await $fetch<IAuthAttemptResponse>(config.url, config.config);
     const expiry = new Date();
     expiry.setSeconds(expiry.getSeconds() + data.expires_in);
 
@@ -44,21 +39,32 @@ const submitForm = (event: any) => {
 
     const route = useRoute();
     if (Object.keys(route.query).includes('redirectTo')) {
-      let dest = JSON.stringify(route.query.redirectTo)
+      return JSON.stringify(route.query.redirectTo)
           .replaceAll('"', '')
-          .replace('/', '')
-
-      state.loading = false;
-      navigateTo(dest);
+          .replace('/', '');
     } else {
-      state.loading = false;
-      navigateTo('/');
+      return '/';
     }
-
-  }).catch((err: any) => {
+  } catch {
     state.loading = false;
-    console.error(err);
-  });
+    state.error = true;
+    return null;
+  }
+}
+
+const submitForm = async (event: any) => {
+  event.preventDefault();
+  const result: boolean = validate();
+  if (!result) {
+    return;
+  }
+
+  let destination: string | null = await sendRequest();
+  if (destination == null) {
+    return;
+  }
+
+  navigateTo(destination);
 }
 
 const addError = (field: string, error: string) => {
@@ -91,12 +97,10 @@ const validate = () : boolean  => {
   <div class="form">
     <div class="header">
       <span class="text">
-        <span class="text--lead">
-          <NuxtLink to="/">
-            <img src="/wordmark-light-theme.png" />
-          </NuxtLink>
-        </span>
-        <span class="text--sub">Sign In</span>
+        <NuxtLink class="text--lead" to="/">
+          <img src="/wordmark-light-theme.png" />
+        </NuxtLink>
+<!--        <span class="text&#45;&#45;sub">Sign In</span>-->
       </span>
     </div>
     <div class="form">
@@ -120,6 +124,10 @@ const validate = () : boolean  => {
           <span v-if="state.loading">Logging in...</span>
         </button>
       </div>
+      <div class="form_group form_group--error" v-if="state.error">
+        <Icon name="duo-icons:alert-octagon" />
+        An error occurred, please double check your credentials and try again
+      </div>
     </div>
   </div>
 </template>
@@ -140,10 +148,16 @@ const validate = () : boolean  => {
       margin-bottom: 6px;
 
       &--lead {
-        max-width: 200px;
+        display: block;
+        img {
+          display: block;
+          max-width: 100%;
+          height: 50px;
+        }
       }
 
       &--sub {
+        display: block;
         font-size: 18px;
       }
     }

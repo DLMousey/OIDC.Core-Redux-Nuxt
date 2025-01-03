@@ -1,13 +1,16 @@
 export default defineNuxtRouteMiddleware((to) => {
-    console.log('running auth middleware');
-    if (import.meta.server) {
-        console.warn('running on server, refusing to run');
-        return;
-    }
-
     const config = useRuntimeConfig();
     const router = useRouter();
     const routes: string[] = config.public.authless_routes;
+
+    if (import.meta.server) {
+        if (to.path == "/login") {
+            return;
+        }
+
+        navigateTo('/login');
+        return;
+    }
 
     let allow: boolean = true;
 

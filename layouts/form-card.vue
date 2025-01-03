@@ -10,13 +10,14 @@
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 @import url('~/assets/scss/main.scss');
 
 .container {
   display: flex;
   align-items: center;
   justify-content: center;
+  height: 100%;
 }
 
 .card {
