@@ -13,6 +13,10 @@
 <style lang="scss">
 @import url('~/assets/scss/main.scss');
 
+body {
+  background: #AFAFAF;
+}
+
 .container {
   display: flex;
   align-items: center;
