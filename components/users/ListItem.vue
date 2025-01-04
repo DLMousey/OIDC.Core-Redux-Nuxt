@@ -12,12 +12,17 @@ defineProps<{
     <h1>{{ user.username }}</h1>
   </div>
   <div class="card-body">
-    <dl>
-      <dt>ID</dt>
-      <dd>{{ user.id }}</dd>
-      <dt>Email</dt>
-      <dd>{{ user.email }}</dd>
-    </dl>
+    <div class="card-picture">
+      <img src="https://picsum.photos/80/80" :alt="user.username" />
+    </div>
+    <div class="card-profile">
+      <dl>
+        <dt>ID</dt>
+        <dd>{{ user.id }}</dd>
+        <dt>Email</dt>
+        <dd>{{ user.email }}</dd>
+      </dl>
+    </div>
   </div>
 </div>
 </template>
@@ -42,6 +47,13 @@ defineProps<{
   &-body {
     padding: 1em 1em 1em 0;
     flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+
+    .card-picture > img {
+      border-radius: 8px;
+      border: 2px solid #EBEBEB;
+    }
   }
 
   &-footer {
