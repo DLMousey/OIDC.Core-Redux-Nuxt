@@ -69,6 +69,18 @@ button[type="submit"], .button {
   }
 }
 
+.button {
+  &--secondary {
+    background: #FFF;
+    border: 1px solid #EBEBEB;
+    color: #333333;
+
+    &:hover {
+      color: #FFF;
+    }
+  }
+}
+
 .container--form {
   width: 100%;
   height: 100%;

@@ -77,7 +77,6 @@ const scopes = ref(null);
 
 <template>
 <div class="container container--form">
-  <button @click="state.error = !state.error">Toggle error</button>
   <div class="error" v-if="state.error">
     <h1>An Error Occurred</h1>
     Please use the back button on your browser to go back
@@ -85,27 +84,20 @@ const scopes = ref(null);
   <div class="prompt" v-if="!state.loading && !state.error">
     <div class="heading">
       <span class="heading-lead">Authorise Application</span>
-      <span class="heading-sub">An application is requesting access to your account</span>
+      <span class="heading-sub"><b><a :href="application.homepageUrl" target="_blank">{{ application.name }}</a></b> is requesting access to your account</span>
     </div>
     <div class="application">
-      <div><b>{{ application.name }}</b> would like to access your account</div>
-      <div>Application's homepage (opens in new tab) - <a :href="application.homepageUrl" target="_blank">{{ application.homepageUrl }}</a></div>
+      <div>
+        It has requested the following permissions
+        <ul>
+          <li v-for="scope in scopes" :key="scope.name">{{ scope.name }}</li>
+        </ul>
+      </div>
       <div><i>This application is <b>not</b> built or maintained by oidc.core</i></div>
-    </div>
-    <div class="scopes">
-      <div class="scopes-heading">
-        <span class="scopes-heading--lead">Permissions Requested</span>
-      </div>
-      <div class="scopes-list">
-        <div class="scopes-listItem" v-for="scope in scopes" :key="scope.name">
-          <b>{{ scope.name }}</b>
-          A brief overview of what this permission allows the application to do
-        </div>
-      </div>
     </div>
     <div class="actions">
       <button class="button" @click="addConsent">Accept</button>
-      <button class="button" @click="navigateTo(application.homepageUrl, { external: true })">Reject</button>
+      <button class="button button--secondary" @click="navigateTo(application.homepageUrl, { external: true })">Reject</button>
     </div>
   </div>
 </div>
@@ -142,11 +134,16 @@ const scopes = ref(null);
     padding: 1em 0;
   }
 
-  .scopes {
+  .actions {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     border-top: 1px solid #FF575F;
     padding-top: 0.4em;
+    justify-items: space-between;
+
+    button {
+      width: 100%;
+    }
 
     &-heading {
       display: flex;
