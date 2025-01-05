@@ -13,6 +13,8 @@ defineProps<{
   </div>
   <div class="card-body">
     <b>{{ application.description ?? "No description provided" }}</b>
+    <b>Client ID: {{ application.clientId ?? "No client id provided" }}</b>
+    <b>Callback URL: {{ application.callbackUrl ?? "No callback URL provided" }}</b>
   </div>
   <div class="card-footer">
     <a class="button" :href="application.homepageUrl">Homepage URL</a>
@@ -41,6 +43,8 @@ defineProps<{
   &-body {
     padding: 1em 1em 1em 0;
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
   }
 
   &-footer {
