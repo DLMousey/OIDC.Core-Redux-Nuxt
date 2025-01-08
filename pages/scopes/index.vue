@@ -3,6 +3,7 @@ import ListItem from "~/components/scopes/ListItem.vue";
 import {useFetchWithRefresh} from "~/composables/fetch-refresh";
 import {useFetchConfig} from "#imports";
 import type IScope from "~/data/models/IScope";
+import ErrorCard from "~/components/core/ErrorCard.vue";
 
 const loading = ref(true);
 const fetchConfig = useFetchConfig(`/scopes`, { server: false, lazy: true });
@@ -16,13 +17,11 @@ if (data) {
 <template>
 <div class="scopes">
   <div class="scopes-toolbar">
-<!--    <select>-->
-<!--      <option v-for="(ns, idx) in namespaceList" :value="ns" :key="ns">{{ ns }}</option>-->
-<!--    </select>-->
     <NuxtLink to="scopes/create" class="button">Create Scope</NuxtLink>
   </div>
   <div class="scopes-list">
     <div v-if="loading">Loading</div>
+    <ErrorCard v-if="!loading && error"></ErrorCard>
     <div v-if="!loading && !data">
       No scopes found.
     </div>

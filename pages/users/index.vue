@@ -3,6 +3,7 @@ import {useFetchConfig} from "#imports";
 import ListItem from "~/components/users/ListItem.vue";
 import type IUser from "~/data/models/IUser";
 import type IAuthRefreshResponse from "~/data/models/IAuthRefreshResponse";
+import ErrorCard from "~/components/core/ErrorCard.vue";
 
 const state = ref({
   loading: true,
@@ -65,8 +66,9 @@ users.value = await fetchUsers();
     <NuxtLink to="/users/create" class="button">Create User</NuxtLink>
   </div>
   <div class="users-list">
-    <div v-if="state.loading">fetching</div>
-    <div v-if="!state.loading && !users">
+    <div class="card" v-if="state.loading">fetching</div>
+    <ErrorCard v-if="!state.loading && state.error" />
+    <div v-if="!state.loading && !state.error && !users">
       No users found
     </div>
     <ListItem v-for="user in users as IUser[]" :key="user.id" :user="user" />
@@ -85,6 +87,8 @@ users.value = await fetchUsers();
   &-list {
     display: flex;
     flex-wrap: wrap;
+    width: 100%;
+    height: 100%;
   }
 
   &-listitem {

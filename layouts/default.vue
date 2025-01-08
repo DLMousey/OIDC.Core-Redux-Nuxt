@@ -1,12 +1,9 @@
 <script setup lang="ts">
 const colourMode = useColorMode();
 const imgSrc = ref(`/wordmark-light-theme.png`);
-//
-// definePageMeta({
-//   middleware: ['auth']
-// })
 
 const authState = useAuth();
+const isAdmin = useIsAdmin();
 </script>
 
 <template>
@@ -44,7 +41,7 @@ const authState = useAuth();
               Settings
             </a>
           </li>
-          <li>
+          <li v-if="isAdmin">
             <NuxtLink to="/users">
               <Icon name="duo-icons:user" />
               Users

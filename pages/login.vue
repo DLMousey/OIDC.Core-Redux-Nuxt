@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {definePageMeta, useFetchConfig} from "#imports";
 import type IAuthAttemptResponse from "~/data/models/IAuthAttemptResponse";
+import type IAuthJwt from "~/data/models/IAuthJwt";
 
 definePageMeta({
   layout: 'form-card'

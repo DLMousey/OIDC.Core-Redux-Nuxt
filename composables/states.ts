@@ -5,7 +5,7 @@ export const useAuth = () => useState<boolean>('authenticated', () => {
 
     const at: string | null = sessionStorage.getItem('_oidc.core.at');
     const rt: string | null = sessionStorage.getItem('_oidc.core.rt');
-    const exp: number | null = new Date(sessionStorage.getItem('_oidc.core.exp'));
+    const exp: Date | null = new Date(sessionStorage.getItem('_oidc.core.exp'));
 
     return !(!at || !rt || !exp);
 })
