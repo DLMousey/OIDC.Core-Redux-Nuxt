@@ -4,60 +4,18 @@ import ListItem from "~/components/users/ListItem.vue";
 import type IUser from "~/data/models/IUser";
 import type IAuthRefreshResponse from "~/data/models/IAuthRefreshResponse";
 import ErrorCard from "~/components/core/ErrorCard.vue";
+import {useFetchWithRefresh} from "~/composables/fetch-refresh";
 
-const state = ref({
-  loading: true,
-  error: false
-});
-
+const loading = ref(true);
 const users = ref(null);
 
-const fetchUsers = async() : Promise<IUser[]> => {
-  const config = useFetchConfig(`/users`, {
-    server: false,
-    lazy: false,
-    method: "GET"
-  });
+const fetchConfig = useFetchConfig(`/users`, { server: false, lazy: true });
+const { data, error } = await useFetchWithRefresh<IUser[]>(fetchConfig.url, fetchConfig.config);
 
-  try {
-    state.value.loading = true;
-    const users = await $fetch<IUser[]>(config.url, config.config);
-    state.value.loading = false;
-
-    return users;
-  } catch(err) {
-    // Get a new access token and automatically retry if the API rejects our access token.
-    // @TODO - add a property that identifies a retry so we don't end up in an infinite refresh loop
-    // @TODO - abstract this out into a reusable method for cleaner error handling on pages
-    if (err.statusCode == 401) {
-      const errConfig = useFetchConfig(`/authentication/refresh`, {
-        server: false,
-        lazy: false,
-        method: "POST",
-        body: {
-          refreshToken: sessionStorage.getItem('_oidc.core.rt')
-        }
-      });
-
-      const rt = await $fetch<IAuthRefreshResponse>(errConfig.url, errConfig.config);
-      let expVal: string|null = rt.expires_in.toString(10);
-      let exp: number | null = null;
-      if (expVal != null && expVal != "NaN") {
-        exp = new Date(parseInt(expVal, 10)).valueOf();
-        sessionStorage.setItem('_oidc.core.exp', JSON.stringify(exp));
-      }
-
-      sessionStorage.setItem('_oidc.core.at', rt.access_token);
-      return await fetchUsers();
-    }
-
-    state.value.loading = false;
-    state.value.error = true;
-    return null;
-  }
-};
-
-users.value = await fetchUsers();
+if (data) {
+  loading.value = false;
+  users.value = data;
+}
 </script>
 
 <template>
@@ -65,13 +23,34 @@ users.value = await fetchUsers();
   <div class="users-toolbar">
     <NuxtLink to="/users/create" class="button">Create User</NuxtLink>
   </div>
-  <div class="users-list">
-    <div class="card" v-if="state.loading">fetching</div>
-    <ErrorCard v-if="!state.loading && state.error" />
-    <div v-if="!state.loading && !state.error && !users">
-      No users found
-    </div>
-    <ListItem v-for="user in users as IUser[]" :key="user.id" :user="user" />
+  <div class="table-container">
+    <table class="table" v-if="!loading && data">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Applications</th>
+        <th>Access Tokens</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr v-for="user in data" :key="user.id">
+        <td>{{ user.id }}</td>
+        <td>{{ user.username }}</td>
+        <td><a :href="'mailto:'+user.email">{{ user.email }}</a></td>
+        <td>0</td>
+        <td>0</td>
+        <td>
+          <div class="button-group">
+            <button class="button">Edit</button>
+            <button class="button">Deactivate</button>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
   </div>
 </div>
 </template>
@@ -102,6 +81,77 @@ users.value = await fetchUsers();
     padding: 1em;
     border-bottom: 1px solid #EBEBEB;
     box-shadow: 0px 5px 25px 0px rgba(0,0,0,0.1);
+  }
+}
+
+.table-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.table {
+  //width: 100%;
+  //border-collapse: collapse;
+  //border: 1px solid red;
+  margin: 1em;
+
+  thead, tbody {
+    width: 100%;
+  }
+
+  tr, th, td {
+    text-align: left;
+  }
+
+  th {
+    font-weight: bold;
+    padding: 1em 0 1em 0.5em;
+    border-bottom: 1px solid #DDD;
+  }
+
+  td {
+    padding: 1em 0 1em 0.5em;
+    border-bottom: 1px solid #DDD;
+
+    &:last-child {
+      padding-right: 1em;
+    }
+
+    .button {
+      padding: 0.8em 0.25em;
+      margin: 0;
+      text-transform: uppercase;
+      font-weight: bold;
+      font-size: 12px;
+    }
+  }
+
+  tr {
+    &:hover {
+      cursor: pointer;
+      background: #EEE;
+    }
+  }
+
+  .button-group {
+    display: flex;
+
+    .button:first-child {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      border-right: 1px solid black;
+    }
+    .button:last-child {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      border-left: 1px solid black;
+    }
+
+    .button:not(:first-child):not(:last-child) {
+      border-radius: 0;
+      border-left: 1px solid black;
+      border-right: 1px solid black;
+    }
   }
 }
 </style>
