@@ -100,7 +100,7 @@ if (authState) {
     </div>
   </div>
 </header>
-<main>
+<main class="h-full">
   <slot />
 </main>
 </template>

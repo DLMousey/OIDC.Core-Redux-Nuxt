@@ -22,7 +22,7 @@ const items = ref<NavigationMenuItem[]>([
       </div>
     </div>
   </header>
-  <main>
+  <main class="h-full">
     <slot />
   </main>
 </template>

@@ -2,17 +2,86 @@
 import {useFetchConfig} from "~/composables/fetch-config";
 import type IScope from "~/data/models/IScope";
 import type IApplication from "~/data/models/IApplication";
+import type IAuthRefreshResponse from "~/data/models/IAuthRefreshResponse";
+import type {_AsyncData} from "#app/composables/asyncData";
 let data;
 
 const state = ref({
   loading: true,
-  error: false
+  error: false,
+  refreshing: false
 });
+
+const authState = useAuth();
+const route = useRoute();
+const toast = useToast();
+
+const queryParams = JSON.stringify(route.query)
+
+if (!authState.value) {
+  navigateTo({
+    path: '/login',
+    query: {
+      redirectTo: queryParams
+    }
+  });
+}
+
+// An expired access token won't work on the oauth endpoint so before we make the request for the
+// consent screen data, we'll do a quick access token refresh
+state.value.refreshing = true;
+state.value.loading = true;
+
+const at: string | null = sessionStorage.getItem('_oidc.core.at');
+const rt: string | null = sessionStorage.getItem('_oidc.core.rt');
+
+let expVal: string | null = sessionStorage.getItem('_oidc.core.exp');
+let exp: number | null = null;
+if (expVal != null && expVal != "NaN") {
+  exp = new Date(parseInt(expVal, 10)).valueOf();
+}
+
+if (expVal == "NaN") {
+  console.warn("Removing invalid expiry time value");
+  sessionStorage.removeItem('_oidc.core.exp');
+  expVal = null;
+  exp = null;
+}
+
+if (!at || !rt || !exp) {
+  toast.add({
+    title: 'Access token expired',
+    description: 'Your access token has expired, you are being redirected to login',
+    color: 'warning'
+  });
+
+  navigateTo({ path: '/login', query: { redirectTo: queryParams }});
+}
+
+const refreshConfig = useFetchConfig('/authentication/refresh', {
+  method: 'POST',
+  body: { refreshToken: rt }
+});
+
+const refreshResponse: _AsyncData<IAuthRefreshResponse, Error | null> = await useFetch(refreshConfig.url, refreshConfig.config);
+if (!refreshResponse) {
+  console.error(refreshResponse);
+  toast.add({
+    title: 'Access token refresh failed',
+    description: 'Unable to refresh your access token, you are being redirected to login',
+    color: 'error'
+  });
+
+  navigateTo({ path: '/login', query: { redirectTo: queryParams }});
+}
+
+sessionStorage.setItem('_oidc.core.at', refreshResponse.data.value.access_token);
+state.value.refreshing = false;
+
+// Now that's refreshed - we can continue
 
 const application = ref(null);
 const scopes = ref(null);
-
-  const route = useRoute();
 
   let string = '';
   const keys = Object.keys(route.query);
@@ -76,85 +145,31 @@ const scopes = ref(null);
 </script>
 
 <template>
-<div class="container container--form">
-  <div class="error" v-if="state.error">
-    <h1>An Error Occurred</h1>
-    Please use the back button on your browser to go back
-  </div>
-  <div class="prompt" v-if="!state.loading && !state.error">
-    <div class="heading">
-      <span class="heading-lead">Authorise Application</span>
-      <span class="heading-sub"><b><a :href="application.homepageUrl" target="_blank">{{ application.name }}</a></b> is requesting access to your account</span>
-    </div>
-    <div class="application">
-      <div>
-        It has requested the following permissions
-        <ul>
-          <li v-for="scope in scopes" :key="scope.name">{{ scope.name }}</li>
-        </ul>
-      </div>
-      <div><i>This application is <b>not</b> built or maintained by oidc.core</i></div>
-    </div>
-    <div class="actions">
-      <button class="button" @click="addConsent">Accept</button>
-      <button class="button button--secondary" @click="navigateTo(application.homepageUrl, { external: true })">Reject</button>
-    </div>
-  </div>
-</div>
+  <UContainer class="flex flex-wrap justify-center content-center w-full h-full">
+    <UCard>
+      <template #header>
+        <h1 v-if="state.refreshing && state.loading && !state.error">Getting ready...</h1>
+        <h1 class="font-bold" v-if="!state.refreshing && !state.loading && !state.error">Authorisation Prompt</h1>
+        <h1 v-if="!state.refreshing && !state.loading && state.error">Something went wrong</h1>
+      </template>
+      <template #default>
+        <div v-if="!state.refreshing && !state.loading && state.error">
+          <b>An error occurred</b> - please use the back button on your browser or refresh the page
+        </div>
+        <div v-if="!state.refreshing && !state.loading && !state.error">
+          <NuxtLink class="font-bold" :to="application.homepageUrl" :external="true">{{ application.name }}</NuxtLink> is requesting access to your account.<br><br>
+          It has requested the following permissions;
+          <ul>
+            <li v-for="scope in scopes" :key="scope.name">{{ scope.name }}</li>
+          </ul>
+          <br><br>
+          This application is <b>not</b> built or maintained by OIDC.Core
+        </div>
+      </template>
+      <template #footer>
+        <UButton type="button" @click="addConsent" color="primary">Allow access</UButton>
+        <UButton type="button" @click="navigateTo(application.homepageUrl, { external: true })" color="secondary">Deny access</UButton>
+      </template>
+    </UCard>
+  </UContainer>
 </template>
-
-<style scoped lang="scss">
-//.container--form {
-//  background: #EBEBEB;
-//}
-//
-//.prompt {
-//  background: #FFF;
-//  border-radius: 8px;
-//  padding: 1em;
-//
-//  .heading {
-//    display: flex;
-//    flex-direction: column;
-//    border-bottom: 1px solid #FF575F;
-//    padding-bottom: 0.4em;
-//
-//    &-lead {
-//      font-size: 24px;
-//      font-weight: bold;
-//      color: #FF575F;
-//    }
-//
-//    &-sub {
-//      font-size: 16px;
-//    }
-//  }
-//
-//  .application {
-//    padding: 1em 0;
-//  }
-//
-//  .actions {
-//    display: flex;
-//    flex-direction: row;
-//    border-top: 1px solid #FF575F;
-//    padding-top: 0.4em;
-//    justify-items: space-between;
-//
-//    button {
-//      width: 100%;
-//    }
-//
-//    &-heading {
-//      display: flex;
-//      flex-direction: column;
-//
-//      &--lead {
-//        font-size: 16px;
-//        font-weight: bold;
-//        color: #FF575F;
-//      }
-//    }
-//  }
-//}
-</style>
