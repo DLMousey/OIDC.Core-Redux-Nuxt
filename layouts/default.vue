@@ -1,159 +1,98 @@
 <script setup lang="ts">
+import type { NavigationMenuItem } from '@nuxt/ui';
+
 const colourMode = useColorMode();
-const imgSrc = ref(`/wordmark-light-theme.png`);
+const imgSrc = ref(`/wordmark-dark-theme.png`);
 
 const authState = useAuth();
 const isAdmin = useIsAdmin();
+
+const active = ref();
+defineShortcuts({
+  1: () => {
+    active.value = '0'
+  },
+  2: () => {
+    active.value = '1'
+  },
+  3: () => {
+    active.value = '2'
+  }
+})
+
+const items = ref<NavigationMenuItem[]>([
+  {
+    label: 'Applications',
+    icon: 'i-lucide-app-window-mac',
+    to: '/applications',
+    children: [
+      {
+        label: 'Create New',
+        icon: 'i-lucide-circle-fading-plus',
+        to: '/applications/create',
+        description: 'Create a new OAuth application'
+      },
+      {
+        label: 'Published Applications',
+        icon: 'i-lucide-user',
+        to: '/applications',
+        description: 'Applications belonging to you'
+      },
+      {
+        label: 'Authorised Applications',
+        icon: 'i-lucide-user-plus',
+        to: '/applications',
+        description: 'Applications with access to your account'
+      }
+    ]
+  },
+  {
+    label: 'Users',
+    icon: 'i-lucide-book-user',
+    to: '/users',
+    children: [
+      {
+        label: 'Create New',
+        icon: 'i-lucide-circle-fading-plus',
+        to: '/users/create',
+        description: 'Create a new user'
+      }
+    ]
+  },
+  {
+    label: 'Scopes',
+    icon: 'i-lucide-telescope',
+    to: '/scopes',
+    children: [
+      {
+        label: 'Create New',
+        icon: 'i-lucide-circle-fading-plus',
+        to: '/scopes/create',
+        description: 'Create a new scope'
+      },
+      {
+        label: 'Dangerous',
+        icon: 'i-lucide-triangle',
+        to: '/scopes',
+        description: 'List scopes marked as dangerous'
+      }
+    ]
+  }
+]);
 </script>
 
 <template>
-  <div class="container">
-    <aside class="aside">
-      <div class="header">
-        <NuxtLink to="/">
-          <img :src="imgSrc" alt="OIDC.Core word mark" />
-        </NuxtLink>
-      </div>
-      <nav class="nav">
-        <span class="nav-heading">Menu</span>
-        <ul>
-          <li>
-            <NuxtLink to="/applications">
-              <Icon name="duo-icons:app" />
-              Applications
-            </NuxtLink>
-          </li>
-          <li>
-            <NuxtLink to="/scopes">
-              <Icon name="duo-icons:clipboard" />
-              Scopes
-            </NuxtLink>
-          </li>
-          <li>
-            <a href="#">
-              <Icon name="duo-icons:user-card" />
-              Access Tokens
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              <Icon name="duo-icons:user" />
-              Settings
-            </a>
-          </li>
-          <li v-if="isAdmin">
-            <NuxtLink to="/users">
-              <Icon name="duo-icons:user" />
-              Users
-            </NuxtLink>
-          </li>
-          <li>
-            <a href="#">
-              <Icon name="duo-icons:chip" />
-              Developers
-            </a>
-          </li>
-          <li v-if="!authState">
-            <NuxtLink to="/login">
-              <Icon name="duo-icons:user" />
-              Log in
-            </NuxtLink>
-          </li>
-          <li v-if="authState">
-            <NuxtLink to="/logout">
-              <Icon name="duo-icons:user-card" />
-              Log out
-            </NuxtLink>
-          </li>
-        </ul>
-      </nav>
-    </aside>
-    <main class="main">
-      <slot />
-    </main>
+<header class="backdrop-blur border-b border-default h-(--ui-header-height) sticky top-0 z-50">
+  <div class="w-full max-w-(--ui-container) mx-auto px-4 flex items-center justify-between gap-3 h-full">
+    <div class="lg:flex-1 flex items-center gap-1.5 min-w-0">
+      <RouterLink to="/"><img class="w-auto h-6 shrink-0" :src="imgSrc" /></RouterLink>
+    </div>
+    <div class="hidden lg:flex grow">
+      <UNavigationMenu v-model="active" :items="items" class="w-full justify-center" />
+    </div>
   </div>
+</header>
+<main>
+  <slot />
+</main>
 </template>
-
-<style lang="scss">
-@import url('~/assets/scss/main.scss');
-
-.container {
-  height: 100%;
-  display: flex;
-}
-
-.main {
-  width: 100%;
-  height: 100%;
-  background: #FFF;
-}
-
-.aside {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 300px;
-  background: #FFF;
-  border-right: 1px solid #EBEBEB;
-
-  .header {
-    flex-basis: 10%;
-    padding: 40px;
-    img {
-      max-width: 100%;
-    }
-  }
-
-  .nav {
-    display: flex;
-    flex-direction: column;
-    padding-left: 40px;
-    margin-top: 40px;
-
-    &-heading {
-      font-weight: 400;
-      color: #AAA;
-      margin-bottom: 12px;
-    }
-
-    ul {
-      display: flex;
-      flex-direction: column;
-
-      li {
-        transition: background 0.2s ease-out, padding-left 0.3s cubic-bezier(.47,1.64,.41,.8);
-        border-top-left-radius: 8px;
-        border-bottom-left-radius: 8px;
-
-        a {
-          padding: 12px 12px 12px 0;
-          display: flex;
-          align-items: center;
-          text-decoration: none;
-          color: black;
-
-          .iconify {
-            margin-right: 8px;
-          }
-        }
-
-        &:hover {
-          background: #FF575F;
-          padding-left: 24px;
-        }
-
-        & > .link-active {
-          background: #FF575F;
-          padding-left: 24px;
-          border-top-left-radius: 8px;
-          border-bottom-left-radius: 8px;
-
-          &:hover {
-            padding-left: 0;
-          }
-        }
-      }
-    }
-  }
-}
-</style>

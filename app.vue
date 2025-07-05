@@ -1,9 +1,11 @@
 <template>
-  <div>
+  <UApp class="h-full w-full">
     <ClientOnly>
       <NuxtLayout>
         <NuxtPage />
       </NuxtLayout>
     </ClientOnly>
-  </div>
+  </UApp>
 </template>
+<script setup lang="ts">
+</script>

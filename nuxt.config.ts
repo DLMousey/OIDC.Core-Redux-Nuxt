@@ -2,7 +2,9 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
-  modules: ['@nuxt/icon', '@nuxtjs/color-mode'],
+  modules: [
+    '@nuxt/ui'
+  ],
   runtimeConfig: {
     public: {
       authless_routes: [
@@ -21,5 +23,13 @@ export default defineNuxtConfig({
   },
   typescript: {
     strict: false
+  },
+  css: [
+    '~/assets/scss/main.css',
+  ],
+  ui: {
+    colors: {
+      primary: 'brandRed'
+    }
   }
 })

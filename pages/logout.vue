@@ -33,38 +33,38 @@ const performLogout = () => {
 </template>
 
 <style scoped lang="scss">
-.form {
-  padding: 24px;
-
-  .header {
-    border-bottom: 2px solid #FF575F;
-    padding: 6px 12px;
-
-    .text {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-      margin-bottom: 6px;
-
-      &--lead {
-        display: block;
-        img {
-          display: block;
-          max-width: 100%;
-          height: 50px;
-        }
-      }
-
-      &--sub {
-        display: block;
-        font-size: 18px;
-      }
-    }
-  }
-
-  button {
-    width: 100%;
-  }
-}
+//.form {
+//  padding: 24px;
+//
+//  .header {
+//    border-bottom: 2px solid #FF575F;
+//    padding: 6px 12px;
+//
+//    .text {
+//      display: flex;
+//      justify-content: space-between;
+//      align-items: center;
+//      width: 100%;
+//      margin-bottom: 6px;
+//
+//      &--lead {
+//        display: block;
+//        img {
+//          display: block;
+//          max-width: 100%;
+//          height: 50px;
+//        }
+//      }
+//
+//      &--sub {
+//        display: block;
+//        font-size: 18px;
+//      }
+//    }
+//  }
+//
+//  button {
+//    width: 100%;
+//  }
+//}
 </style>

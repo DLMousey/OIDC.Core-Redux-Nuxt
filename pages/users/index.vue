@@ -56,102 +56,102 @@ if (data) {
 </template>
 
 <style scoped lang="scss">
-.users {
-  display: flex;
-  flex-direction: column;
-  background: #FFF;
-  width: 100%;
-  height: 100%;
-
-  &-list {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-    height: 100%;
-  }
-
-  &-listitem {
-    flex-basis: 30%;
-    height: 275px;
-  }
-
-  &-toolbar {
-    display: flex;
-    justify-content: flex-end;
-    padding: 1em;
-    border-bottom: 1px solid #EBEBEB;
-    box-shadow: 0px 5px 25px 0px rgba(0,0,0,0.1);
-  }
-}
-
-.table-container {
-  display: flex;
-  flex-direction: column;
-}
-
-.table {
-  //width: 100%;
-  //border-collapse: collapse;
-  //border: 1px solid red;
-  margin: 1em;
-
-  thead, tbody {
-    width: 100%;
-  }
-
-  tr, th, td {
-    text-align: left;
-  }
-
-  th {
-    font-weight: bold;
-    padding: 1em 0 1em 0.5em;
-    border-bottom: 1px solid #DDD;
-  }
-
-  td {
-    padding: 1em 0 1em 0.5em;
-    border-bottom: 1px solid #DDD;
-
-    &:last-child {
-      padding-right: 1em;
-    }
-
-    .button {
-      padding: 0.8em 0.25em;
-      margin: 0;
-      text-transform: uppercase;
-      font-weight: bold;
-      font-size: 12px;
-    }
-  }
-
-  tr {
-    &:hover {
-      cursor: pointer;
-      background: #EEE;
-    }
-  }
-
-  .button-group {
-    display: flex;
-
-    .button:first-child {
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
-      border-right: 1px solid black;
-    }
-    .button:last-child {
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-      border-left: 1px solid black;
-    }
-
-    .button:not(:first-child):not(:last-child) {
-      border-radius: 0;
-      border-left: 1px solid black;
-      border-right: 1px solid black;
-    }
-  }
-}
+//.users {
+//  display: flex;
+//  flex-direction: column;
+//  background: #FFF;
+//  width: 100%;
+//  height: 100%;
+//
+//  &-list {
+//    display: flex;
+//    flex-wrap: wrap;
+//    width: 100%;
+//    height: 100%;
+//  }
+//
+//  &-listitem {
+//    flex-basis: 30%;
+//    height: 275px;
+//  }
+//
+//  &-toolbar {
+//    display: flex;
+//    justify-content: flex-end;
+//    padding: 1em;
+//    border-bottom: 1px solid #EBEBEB;
+//    box-shadow: 0px 5px 25px 0px rgba(0,0,0,0.1);
+//  }
+//}
+//
+//.table-container {
+//  display: flex;
+//  flex-direction: column;
+//}
+//
+//.table {
+//  //width: 100%;
+//  //border-collapse: collapse;
+//  //border: 1px solid red;
+//  margin: 1em;
+//
+//  thead, tbody {
+//    width: 100%;
+//  }
+//
+//  tr, th, td {
+//    text-align: left;
+//  }
+//
+//  th {
+//    font-weight: bold;
+//    padding: 1em 0 1em 0.5em;
+//    border-bottom: 1px solid #DDD;
+//  }
+//
+//  td {
+//    padding: 1em 0 1em 0.5em;
+//    border-bottom: 1px solid #DDD;
+//
+//    &:last-child {
+//      padding-right: 1em;
+//    }
+//
+//    .button {
+//      padding: 0.8em 0.25em;
+//      margin: 0;
+//      text-transform: uppercase;
+//      font-weight: bold;
+//      font-size: 12px;
+//    }
+//  }
+//
+//  tr {
+//    &:hover {
+//      cursor: pointer;
+//      background: #EEE;
+//    }
+//  }
+//
+//  .button-group {
+//    display: flex;
+//
+//    .button:first-child {
+//      border-top-right-radius: 0;
+//      border-bottom-right-radius: 0;
+//      border-right: 1px solid black;
+//    }
+//    .button:last-child {
+//      border-top-left-radius: 0;
+//      border-bottom-left-radius: 0;
+//      border-left: 1px solid black;
+//    }
+//
+//    .button:not(:first-child):not(:last-child) {
+//      border-radius: 0;
+//      border-left: 1px solid black;
+//      border-right: 1px solid black;
+//    }
+//  }
+//}
 </style>

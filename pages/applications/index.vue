@@ -2,10 +2,94 @@
 import {useFetch, useFetchConfig} from "#imports";
 import ListItem from "~/components/applications/ListItem.vue";
 import {useFetchWithRefresh} from "~/composables/fetch-refresh";
+import type {TableColumn} from "#ui/components/Table.vue";
+import {UCheckbox, ULink} from "#components";
+import type IApplication from "~/data/models/IApplication";
+import { getPaginationRowModel } from "@tanstack/table-core";
 
+const router = useRouter();
 const loading = ref(true);
 const fetchConfig = useFetchConfig(`/applications`, { server: false, lazy: true });
 const { data, error } = await useFetchWithRefresh(fetchConfig.url, fetchConfig.config);
+
+const columns: TableColumn<IApplication>[] = [{
+  id: 'select',
+  header: ({ table }) => h(UCheckbox, {
+    'modelValue': table.getIsSomePageRowsSelected() ? 'indeterminate' : table.getIsAllPageRowsSelected(),
+    'onUpdate:modelValue': (value: boolean | 'indeterminate') => table.toggleAllPageRowsSelected(!!value),
+    'aria-label': 'Select all'
+  }),
+  cell: ({ row }) => h(UCheckbox, {
+    'modelValue': row.getIsSelected(),
+    'onUpdate:modelValue': (value: boolean | 'indeterminate') => row.toggleSelected(!!value),
+    'aria-label': 'Select row'
+  }),
+  enableSorting: false,
+  enableHiding: true
+}, {
+  accessorKey: 'id',
+  header: 'ID (GUID)',
+  cell: ({ row }) => `${row.getValue('id')}`
+}, {
+  accessorKey: 'name',
+  header: 'Application Name',
+  cell: ({ row }) => `${row.getValue('name')}`,
+  enableSorting: true,
+  enableHiding: true
+}, {
+  accessorKey: 'description',
+  header: 'Description',
+  cell: ({ row }) => `${row.getValue('description')}`,
+  enableSorting: false,
+  enableHiding: true
+}, {
+  accessorKey: 'homepageUrl',
+  header: 'Homepage URL',
+  cell: ({ row }) => h(ULink, {
+    'as': 'button',
+    'to': `${row.getValue('homepageUrl')}`
+  }),
+  enableSorting: false,
+  enableHiding: true
+}, {
+  accessorKey: 'callbackUrl',
+  header: 'Callback URL',
+  cell: ({ row }) => h(ULink, {
+    'as': 'button',
+    'to': `${row.getValue('callbackUrl')}`
+  }),
+  enableSorting: false,
+  enableHiding: true
+}, {
+  accessorKey: 'clientId',
+  header: 'Client ID',
+  cell: ({ row }) => `${row.getValue('clientId')}`,
+  enableSorting: false,
+  enableHiding: true
+}, {
+  accessorKey: 'created',
+  header: 'Creation Date',
+  cell: ({ row }) => {
+    return new Date(row.getValue('created')).toLocaleString('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: false
+    })
+  }
+}, {
+  id: 'action',
+  header: 'Actions'
+}];
+
+const table = useTemplateRef('table');
+const globalFilter = ref();
+const pagination = ref({
+  pageIndex: 0,
+  pageSize: 10
+})
 
 console.log(data, error);
 if (data) {
@@ -14,44 +98,73 @@ if (data) {
 </script>
 
 <template>
-<div class="applications">
-  <div class="applications-toolbar">
-    <NuxtLink to="applications/create" class="button">Create application</NuxtLink>
-  </div>
-  <div class="applications-list">
-    <div v-if="loading">Loading</div>
-    <div v-if="!loading && !data">
-      No applications found.
+  <div class="flex-1 divide-y divide-accented w-full">
+    <div class="flex px-4 py-3.5 border-b border-accented">
+      <UInput v-model="globalFilter" class="max-w-sm" placeholder="Search applications..." />
     </div>
-    <ListItem class="applications-listitem" v-for="application in data" :application="application" :key="application.id" />
+    <UTable ref="table"
+            v-model:global-filter="globalFilter"
+            v-model:pagination="pagination"
+            :pagination-options="{getPaginationRowModel: getPaginationRowModel()}"
+            :data="data"
+            :columns="columns"
+            sticky
+            class="h-96"
+    >
+      <template #expanded="{ row }">
+        <pre>{{ row.original }}</pre>
+      </template>
+      <template #action-cell="{ row }">
+        <NuxtLink :to="{ name: 'applications-id', params: { id: row.getValue('id') }}">
+          <UButton color="neutral" variant="outline">Edit Application</UButton>
+        </NuxtLink>
+      </template>
+    </UTable>
+    <div class="flex justify-center border-t border-default pt-4">
+      <UPagination
+        :default-page="(table?.tableApi?.getState().pagination.pageIndex || 0) + 1"
+        :items-per-page="table?.tableApi?.getState().pagination.pageSize"
+        :total="table?.tableApi?.getFilteredRowModel().rows.length"
+        @update:page="(p) => table?.tableApi?.setPageIndex(p - 1)"
+      />
+    </div>
   </div>
-</div>
+<!--  <div class="table-container is-fluid">-->
+<!--    <table class="table">-->
+<!--      <thead>-->
+<!--      <tr>-->
+<!--        <th>Id</th>-->
+<!--        <th>Application Name</th>-->
+<!--        <th>Client ID</th>-->
+<!--        <th>Homepage URL</th>-->
+<!--        <th>Callback URL</th>-->
+<!--        <th>Created</th>-->
+<!--        <th>Action</th>-->
+<!--      </tr>-->
+<!--      </thead>-->
+<!--      <tbody>-->
+<!--      <tr v-on:click="applicationDetail(application)" v-for="application in data" :key="application.id">-->
+<!--        <td :title="application.id">{{ application.id.slice(0, 5) }}...</td>-->
+<!--        <td>{{ application.name }}</td>-->
+<!--        <td>{{ application.clientId }}</td>-->
+<!--        <td>{{ application.homepageUrl }}</td>-->
+<!--        <td>{{ application.callbackUrl }}</td>-->
+<!--        <td>{{ dateFormat(application.createdAt) }}</td>-->
+<!--        <td>-->
+<!--          <button class="button is-primary">Edit</button>-->
+<!--        </td>-->
+<!--      </tr>-->
+<!--      </tbody>-->
+<!--    </table>-->
+<!--  </div>-->
 </template>
 
 <style scoped lang="scss">
-.applications {
-  display: flex;
-  flex-direction: column;
-  background: #FFF;
+.table {
   width: 100%;
-  height: 100%;
 
-  &-list {
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  &-listitem {
-    flex-basis: 30%;
-    height: 275px;
-  }
-
-  &-toolbar {
-    display: flex;
-    justify-content: flex-end;
-    padding: 1em;
-    border-bottom: 1px solid #EBEBEB;
-    box-shadow: 0px 5px 25px 0px rgba(0,0,0,0.1);
+  tbody > tr {
+    cursor: pointer;
   }
 }
 </style>

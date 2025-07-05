@@ -104,57 +104,57 @@ const scopes = ref(null);
 </template>
 
 <style scoped lang="scss">
-.container--form {
-  background: #EBEBEB;
-}
-
-.prompt {
-  background: #FFF;
-  border-radius: 8px;
-  padding: 1em;
-
-  .heading {
-    display: flex;
-    flex-direction: column;
-    border-bottom: 1px solid #FF575F;
-    padding-bottom: 0.4em;
-
-    &-lead {
-      font-size: 24px;
-      font-weight: bold;
-      color: #FF575F;
-    }
-
-    &-sub {
-      font-size: 16px;
-    }
-  }
-
-  .application {
-    padding: 1em 0;
-  }
-
-  .actions {
-    display: flex;
-    flex-direction: row;
-    border-top: 1px solid #FF575F;
-    padding-top: 0.4em;
-    justify-items: space-between;
-
-    button {
-      width: 100%;
-    }
-
-    &-heading {
-      display: flex;
-      flex-direction: column;
-
-      &--lead {
-        font-size: 16px;
-        font-weight: bold;
-        color: #FF575F;
-      }
-    }
-  }
-}
+//.container--form {
+//  background: #EBEBEB;
+//}
+//
+//.prompt {
+//  background: #FFF;
+//  border-radius: 8px;
+//  padding: 1em;
+//
+//  .heading {
+//    display: flex;
+//    flex-direction: column;
+//    border-bottom: 1px solid #FF575F;
+//    padding-bottom: 0.4em;
+//
+//    &-lead {
+//      font-size: 24px;
+//      font-weight: bold;
+//      color: #FF575F;
+//    }
+//
+//    &-sub {
+//      font-size: 16px;
+//    }
+//  }
+//
+//  .application {
+//    padding: 1em 0;
+//  }
+//
+//  .actions {
+//    display: flex;
+//    flex-direction: row;
+//    border-top: 1px solid #FF575F;
+//    padding-top: 0.4em;
+//    justify-items: space-between;
+//
+//    button {
+//      width: 100%;
+//    }
+//
+//    &-heading {
+//      display: flex;
+//      flex-direction: column;
+//
+//      &--lead {
+//        font-size: 16px;
+//        font-weight: bold;
+//        color: #FF575F;
+//      }
+//    }
+//  }
+//}
 </style>
