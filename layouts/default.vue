@@ -77,8 +77,16 @@ const items = ref<NavigationMenuItem[]>([
         description: 'List scopes marked as dangerous'
       }
     ]
-  }
+  },
 ]);
+
+if (authState) {
+  items.value.push({
+    label: 'Log out',
+    icon: 'i-lucide-log-out',
+    to: '/logout'
+  })
+}
 </script>
 
 <template>
