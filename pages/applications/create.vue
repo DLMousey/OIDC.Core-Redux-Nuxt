@@ -1,114 +1,79 @@
 <script async setup lang="ts">
-import {helpers, required, url} from "@vuelidate/validators";
-import useVuelidate from "@vuelidate/core";
+import * as v from 'valibot';
 import {useFetchConfig} from "#imports";
 
-const application = reactive({
-  name: null,
-  homepageUrl: null,
-  description: null,
-  callbackUrl: null
+const state = reactive({
+  loading: false,
+  error: false
 });
 
-const rules = computed(() => {
-  return {
-    name: {
-      required: helpers.withMessage("A name must be provided", required)
-    },
-    homepageUrl: {
-      required: helpers.withMessage("A homepage url must be provided", required),
-      url: helpers.withMessage("The homepage URL must be a valid URL", url)
-    },
-    callbackUrl: {
-      required: helpers.withMessage("A valid callback url must be provided", required),
-      url: helpers.withMessage("The callback URL must be a valid URL", url)}
-  }
+const formState = reactive({
+  name: '',
+  homepageUrl: '',
+  description: '',
+  callbackUrl: ''
 });
 
-const v$ = useVuelidate(rules, application);
+const schema = v.object({
+  name: v.pipe(v.string()),
+  homepageUrl: v.pipe(v.string(), v.url('A homepage URL must be provided')),
+  description: v.pipe(v.string()),
+  callbackUrl: v.pipe(v.string(), v.url('A callback URL must be provided'))
+});
+
+type Schema = v.InferOutput<typeof schema>;
+const toast = useToast();
+
 async function processForm(event: Event): Promise<void> {
-  event.preventDefault();
-  await v$.value.$validate();
-  if (v$.value.$errors.length != 0) {
-    console.warn('validation failed', v$.value.$errors);
-    return;
-  }
+  state.loading = true;
+  state.error = false;
 
   const fetchConfig = useFetchConfig(`/applications`, {
     server: false,
     lazy: false,
     method: "POST",
-    body: application
+    body: formState
   });
 
   const result = await useFetch(fetchConfig.url, fetchConfig.config);
+  if (!result) {
+    state.error = true;
+    toast.add({
+      title: 'Failed to create application',
+      description: 'Please double check your input and try again',
+      color: 'error'
+    });
+  }
+
+  toast.add({
+    title: 'Application created successfully',
+    description: `${formState.name} was created successfully. Redirecting to application list`,
+    color: 'success'
+  });
+
+  navigateTo({path: '/applications'});
 }
 </script>
 
 <template>
-<div class="container--form">
-  <form class="form" @submit="processForm">
-    <h2 class="form_header">Create an Application</h2>
-    <div class="form_group">
-      <label class="form_group-label" for="name">Name</label>
-      <input
-          class="form_group-input"
-          type="text"
-          id="name"
-          v-model="application.name"
-          @change="v$.name.$touch"
-      />
-      <div v-if="v$.name.invalid && v$.name.$errors">
-        <ul>
-          <li v-for="error in v$.name.$errors">
-            {{ error }}
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class="form_group">
-      <label class="form_group-label" for="description">Description</label>
-      <textarea
-          class="form_group-input"
-          id="description"
-          v-model="application.description"
-          @change="v$.description.$touch"
-      ></textarea>
-    </div>
-    <div class="form_group">
-      <label class="form_group-label" for="homepageUrl">Homepage URL</label>
-      <input
-          class="form_group-input"
-          type="text"
-          id="homepageUrl"
-          v-model="application.homepageUrl"
-          @change="v$.homepageUrl.$touch"
-      />
-    </div>
-    <div class="form_group">
-      <label class="form_group-label" for="callbackUrl">Callback URL</label>
-      <input
-          class="form_group-input"
-          type="text"
-          id="callbackUrl"
-          v-model="application.callbackUrl"
-          @change="v$.callbackUrl.$touch"
-      />
-      <div v-if="v$.callbackUrl.$invalid || v$.callbackUrl.$error">
-        <ul>
-          <li v-for="error in v$.callbackUrl.$errors">
-            {{ error.$message }}
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class="form_group">
-      <button type="submit" :disabled="v$.$errors.length > 0">Create Application</button>
-    </div>
-  </form>
-</div>
+  <UContainer class="flex flex-wrap justify-content content-center w-full h-full">
+    <UForm :schema="schema" :state="formState" class="space-y-4 grow" @submit="processForm">
+      <h1>Create Application</h1>
+      <UFormField label="Name (required)" name="name" class="w-full">
+        <UInput v-model="formState.name" class="w-full" />
+      </UFormField>
+      <UFormField label="Description" name="description" class="w-full">
+        <UTextarea v-model="formState.description" class="w-full" />
+      </UFormField>
+      <UFormField label="Homepage URL (required)" name="homepageUrl" class="w-full">
+        <UInput v-model="formState.homepageUrl" class="w-full" />
+      </UFormField>
+      <UFormField label="Callback URL (required)" name="callbackUrl" class="w-full">
+        <UInput v-model="formState.callbackUrl" class="w-full" />
+      </UFormField>
+      <UButton type="submit" :disabled="state.loading">
+        Create Application
+      </UButton>
+    </UForm>
+  </UContainer>
 </template>
-
-<style scoped lang="scss">
-
-</style>
