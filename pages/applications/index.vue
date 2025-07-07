@@ -43,23 +43,13 @@ const columns: TableColumn<IApplication>[] = [{
   enableSorting: false,
   enableHiding: true
 }, {
-  accessorKey: 'homepageUrl',
+  id: 'homepage',
   header: 'Homepage URL',
-  cell: ({ row }) => h(ULink, {
-    'as': 'button',
-    'to': `${row.getValue('homepageUrl')}`
-  }),
-  enableSorting: false,
-  enableHiding: true
+  cell: ({ row }) => row.getValue('homepageUrl')
 }, {
-  accessorKey: 'callbackUrl',
+  id: 'callback',
   header: 'Callback URL',
-  cell: ({ row }) => h(ULink, {
-    'as': 'button',
-    'to': `${row.getValue('callbackUrl')}`
-  }),
-  enableSorting: false,
-  enableHiding: true
+  cell: ({ row }) => row.getValue('callbackUrl')
 }, {
   accessorKey: 'clientId',
   header: 'Client ID',
@@ -119,6 +109,12 @@ if (data) {
           <UButton color="neutral" variant="outline">Edit Application</UButton>
         </NuxtLink>
       </template>
+      <template #homepage-cell="{ row }">
+        <a :href="row.original.homepageUrl">{{ row.original.homepageUrl }}</a>
+      </template>
+      <template #callback-cell="{ row }">
+        <a :href="row.original.callbackUrl">{{ row.original.callbackUrl }}</a>
+      </template>
     </UTable>
     <div class="flex justify-center border-t border-default pt-4">
       <UPagination
@@ -129,34 +125,6 @@ if (data) {
       />
     </div>
   </div>
-<!--  <div class="table-container is-fluid">-->
-<!--    <table class="table">-->
-<!--      <thead>-->
-<!--      <tr>-->
-<!--        <th>Id</th>-->
-<!--        <th>Application Name</th>-->
-<!--        <th>Client ID</th>-->
-<!--        <th>Homepage URL</th>-->
-<!--        <th>Callback URL</th>-->
-<!--        <th>Created</th>-->
-<!--        <th>Action</th>-->
-<!--      </tr>-->
-<!--      </thead>-->
-<!--      <tbody>-->
-<!--      <tr v-on:click="applicationDetail(application)" v-for="application in data" :key="application.id">-->
-<!--        <td :title="application.id">{{ application.id.slice(0, 5) }}...</td>-->
-<!--        <td>{{ application.name }}</td>-->
-<!--        <td>{{ application.clientId }}</td>-->
-<!--        <td>{{ application.homepageUrl }}</td>-->
-<!--        <td>{{ application.callbackUrl }}</td>-->
-<!--        <td>{{ dateFormat(application.createdAt) }}</td>-->
-<!--        <td>-->
-<!--          <button class="button is-primary">Edit</button>-->
-<!--        </td>-->
-<!--      </tr>-->
-<!--      </tbody>-->
-<!--    </table>-->
-<!--  </div>-->
 </template>
 
 <style scoped lang="scss">
